@@ -1,0 +1,97 @@
+{
+  "project_info": {
+    "project_number": "70054745517",
+    "firebase_url": "https://admob-app-id-6279012805.firebaseio.com",
+    "project_id": "admob-app-id-6279012805",
+    "storage_bucket": "admob-app-id-6279012805.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:70054745517:android:29043a390e003045",
+        "android_client_info": {
+          "package_name": "de.js_jabs.lateinloesungen"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "70054745517-28ln96d5jp01pplf4ps4amspb86gva4n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "de.js_jabs.lateinloesungen",
+            "certificate_hash": "86B104D68C9737B8AFEAC6C41339717A92E92751"
+          }
+        },
+        {
+          "client_id": "70054745517-evg62s5um03qidk8heb7fikl63uckdpp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "de.js_jabs.lateinloesungen",
+            "certificate_hash": "202D120AA495F4F508351045D91276A0C9FD3604"
+          }
+        },
+        {
+          "client_id": "70054745517-nlv2hk9c2it43ens1otglrc9jc4009nb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_ll53eBCGfMbSDPARpPiHCjR2ubCglkI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:70054745517:android:394c633060eba330",
+        "android_client_info": {
+          "package_name": "de.js_labs.lateinprima"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "70054745517-45i4pcdkj3r2ufep3sd2clmqmgjgh1a5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "de.js_labs.lateinprima",
+            "certificate_hash": "86B104D68C9737B8AFEAC6C41339717A92E92751"
+          }
+        },
+        {
+          "client_id": "70054745517-nlv2hk9c2it43ens1otglrc9jc4009nb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_ll53eBCGfMbSDPARpPiHCjR2ubCglkI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,62 @@
+<resources>
+    <string-array name="letionen">
+        <item>Lektion 1</item>
+        <item>Lektion 2</item>
+        <item>Lektion 3</item>
+        <item>Lektion 4</item>
+        <item>Lektion 5</item>
+        <item>Lektion 6</item>
+        <item>Lektion 7</item>
+        <item>Lektion 8</item>
+        <item>Lektion 9</item>
+        <item>Lektion 10</item>
+        <item>Lektion 11</item>
+        <item>Lektion 12</item>
+        <item>Lektion 13</item>
+        <item>Lektion 14</item>
+        <item>Lektion 15</item>
+        <item>Lektion 16</item>
+        <item>Lektion 17</item>
+        <item>Lektion 18</item>
+        <item>Lektion 19</item>
+        <item>Lektion 20</item>
+        <item>Lektion 21</item>
+        <item>Lektion 22</item>
+        <item>Lektion 23</item>
+        <item>Lektion 24</item>
+        <item>Lektion 25</item>
+        <item>Lektion 26</item>
+        <item>Lektion 27</item>
+        <item>Lektion 28</item>
+        <item>Lektion 29</item>
+        <item>Lektion 30</item>
+        <item>Lektion 31</item>
+        <item>Lektion 32</item>
+        <item>Lektion 33</item>
+        <item>Lektion 34</item>
+        <item>Lektion 35</item>
+        <item>Lektion 36</item>
+        <item>Lektion 37</item>
+        <item>Lektion 38</item>
+        <item>Lektion 39</item>
+        <item>Lektion 40</item>
+        <item>Lektion 41</item>
+        <item>Lektion 42</item>
+        <item>Lektion 43</item>
+        <item>Lektion 44</item>
+        <item>Lektion 45</item>
+        <item>Lektion 46</item>
+        <item>Lektion 47</item>
+        <item>Lektion 48</item>
+        <item>Lektion 49</item>
+        <item>Lektion 50</item>
+    </string-array>
+    <string-array name="textModePref">
+        <item>ohne Texteingabe</item>
+        <item>mit Texteingabe</item>
+    </string-array>
+    <string-array name="textModePrefVal">
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+</resources>

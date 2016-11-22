@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/contentDisplayTestVocNotProveRl"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".DisplayTestVoc">
+
+    <TextView
+        android:padding="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Latein"
+        android:textColor="@color/colorWhite"
+        android:background="@color/colorPrimary"
+        android:textSize="25dp"
+        android:id="@+id/textViewTestVocLateinTitleNP"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:padding="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Deutsch"
+        android:textColor="@color/colorWhite"
+        android:background="@color/colorPrimary"
+        android:textSize="25dp"
+        android:id="@+id/textViewTestVocDeutschTitleNP"
+        android:layout_centerVertical="true"
+        android:layout_alignLeft="@+id/textViewTestVocLateinTitleNP"
+        android:layout_alignStart="@+id/textViewTestVocLateinTitleNP"
+        android:layout_alignRight="@+id/textViewTestVocLateinTitleNP"
+        android:layout_alignEnd="@+id/textViewTestVocLateinTitleNP" />
+
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/scrollView4"
+        android:layout_below="@+id/textViewTestVocLateinTitleNP"
+        android:layout_above="@+id/textViewTestVocDeutschTitleNP"
+        android:layout_alignLeft="@+id/textViewTestVocLateinTitleNP"
+        android:layout_alignStart="@+id/textViewTestVocLateinTitleNP">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Ein Fehler ist aufgetreten"
+            android:padding="16dp"
+            android:textSize="30dp"
+            android:id="@+id/textViewTestVocLateinNP" />
+
+    </ScrollView>
+
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/scrollView5"
+        android:layout_below="@+id/textViewTestVocDeutschTitleNP"
+        android:layout_above="@+id/buttonTestVocRight"
+        android:layout_alignLeft="@+id/textViewTestVocDeutschTitleNP"
+        android:layout_alignStart="@+id/textViewTestVocDeutschTitleNP">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Ein Fehler ist aufgetreten"
+            android:padding="16dp"
+            android:textSize="25dp"
+            android:id="@+id/textViewTestVocDeutschNP" />
+
+    </ScrollView>
+
+    <Button
+        android:padding="16dp"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Aufdecken"
+        android:id="@+id/buttonTestVocRight"
+        android:textColor="@color/colorWhite"
+        android:background="@color/colorButton"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true" />
+
+    <Button
+        android:padding="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nicht gewusst"
+        android:id="@+id/buttonTestVocWrong"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginBottom="16dp"
+        android:textColor="@color/colorWhite"
+        android:background="#FF0000"
+        android:visibility="invisible"/>
+
+</RelativeLayout>

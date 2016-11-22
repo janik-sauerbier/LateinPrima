@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/contentDisplayTestVocProveRl"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="de.js_labs.lateinprima.DisplayTestVoc">
+
+    <TextView
+        android:padding="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Latein"
+        android:textColor="@color/colorWhite"
+        android:background="@color/colorPrimary"
+        android:textSize="25dp"
+        android:id="@+id/textViewTestVocLateinTitleP" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Ein Fehler ist aufgetreten"
+        android:padding="16dp"
+        android:textSize="30dp"
+        android:layout_below="@+id/textViewTestVocLateinTitleP"
+        android:id="@+id/textViewTestVocLateinP" />
+
+    <TextView
+        android:padding="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Deutsch"
+        android:textColor="@color/colorWhite"
+        android:background="@color/colorPrimary"
+        android:textSize="25dp"
+        android:id="@+id/textViewTestVocDeutschTitleP"
+        android:layout_above="@+id/editTextTestVocInput"/>
+
+    <EditText
+        android:minHeight="125dp"
+        android:padding="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/editTextTestVocInput"
+        android:textSize="20dp"
+        android:layout_above="@+id/buttonTestVocProve"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:background="#EEEEEE"
+        android:hint="Formen/Übersetzung eingeben..."/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Ein Fehler ist aufgetreten"
+        android:layout_above="@+id/buttonTestVocProve"
+        android:layout_alignTop="@+id/editTextTestVocInput"
+        android:background="#EEEEEE"
+        android:padding="16dp"
+        android:textSize="25dp"
+        android:id="@+id/textViewTestVocDeutschP" />
+
+    <Button
+        android:padding="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Prüfen"
+        android:id="@+id/buttonTestVocProve"
+        android:textColor="@color/colorWhite"
+        android:background="@color/colorButton"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true" />
+
+    <Button
+        android:padding="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="War Richtig"
+        android:id="@+id/buttonTestVocJustRight"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginBottom="16dp"
+        android:textColor="@color/colorWhite"
+        android:background="#00A827"
+        android:visibility="invisible"/>
+
+</RelativeLayout>
