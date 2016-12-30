@@ -133,6 +133,9 @@ public class DisplayTestVoc extends AppCompatActivity implements Button.OnClickL
 
         if(ds.proveInput){
 
+            Bundle bundle = new Bundle();
+            firebaseAnalytics.logEvent("TV-ProveInput", bundle);
+
             latein = (TextView) findViewById(R.id.textViewTestVocLateinP);
             deutsch = (TextView) findViewById(R.id.textViewTestVocDeutschP);
             justRightBtn = (Button) findViewById(R.id.buttonTestVocJustRight);
@@ -222,7 +225,7 @@ public class DisplayTestVoc extends AppCompatActivity implements Button.OnClickL
                 if(ds.devMode){
                     mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
                 }else {
-                    mInterstitialAd.setAdUnitId("ca-app-pub-2790218770120733/3725402002");
+                    mInterstitialAd.setAdUnitId("ca-app-pub-2790218770120733/9434663605");
                 }
 
                 mInterstitialAd.setAdListener(new AdListener() {
@@ -242,7 +245,7 @@ public class DisplayTestVoc extends AppCompatActivity implements Button.OnClickL
                 if(ds.devMode){
                     mAdView.setAdUnitId("ca-app-pub-3940256099942544/6300978111");
                 }else {
-                    mAdView.setAdUnitId("ca-app-pub-2790218770120733/9771935603");
+                    mAdView.setAdUnitId("ca-app-pub-2790218770120733/2050997601");
                 }
                 contentDisplayTestVocNotProve.addView(mAdView);
                 AdRequest adRequest = new AdRequest.Builder().build();

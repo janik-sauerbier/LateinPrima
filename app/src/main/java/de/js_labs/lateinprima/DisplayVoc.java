@@ -101,6 +101,7 @@ public class DisplayVoc extends AppCompatActivity {
             contentDisplayVoc.addView(mAdView);
             AdRequest adRequest = new AdRequest.Builder().build();
             mAdView.loadAd(adRequest);
+
             layoutListener = new ViewTreeObserver.OnGlobalLayoutListener(){
                 @Override
                 public void onGlobalLayout() {
