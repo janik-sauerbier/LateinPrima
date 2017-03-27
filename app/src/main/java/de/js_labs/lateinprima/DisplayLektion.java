@@ -1,6 +1,8 @@
 package de.js_labs.lateinprima;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -25,13 +27,15 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.NativeExpressAdView;
+import com.google.firebase.crash.FirebaseCrash;
 
 public class DisplayLektion extends AppCompatActivity {
 
     private final String COPY_MESSAGE = "Hol dir die Latein Prima App im Playstore :D\nbit.ly/Latein-Prima-App\n\n";
     private TextView text;
-    private InterstitialAd mInterstitialAd;
     private AdView mAdView;
+    public static NativeExpressAdView mNativAdView;
     private ViewTreeObserver.OnGlobalLayoutListener layoutListener;
     private RelativeLayout contentDisplayLektion;
     private ScrollView scrollView;
@@ -62,25 +66,43 @@ public class DisplayLektion extends AppCompatActivity {
 
         contentDisplayLektion = (RelativeLayout)findViewById(R.id.contentDisplayLektionRl);
 
-        if(ds.removeAds == true){
+        if(ds.removeAds || ds.surveyRemoveAds){
             Log.d(ds.LOG_TAG, "Werbung wird nicht angezeigt");
         }else {
             Log.d(ds.LOG_TAG, "Werbung wird angezeigt");
-            mInterstitialAd = new InterstitialAd(this);
+            mNativAdView = new NativeExpressAdView(this);
 
             if(ds.devMode){
-                mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+                mNativAdView.setAdUnitId("ca-app-pub-3940256099942544/2177258514");
             }else {
-                mInterstitialAd.setAdUnitId("ca-app-pub-2790218770120733/3527730803");
+                mNativAdView.setAdUnitId("ca-app-pub-2790218770120733/4942338800");
             }
 
-            mInterstitialAd.setAdListener(new AdListener() {
+            RelativeLayout.LayoutParams nativAdLP =  new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+            nativAdLP.addRule(RelativeLayout.BELOW, R.id.nad_title);
+            nativAdLP.setMargins(dpToPx(5), 0, dpToPx(5), dpToPx(5));
+
+            mNativAdView.setLayoutParams(nativAdLP);
+
+            int pxWidth = this.getResources().getDisplayMetrics().widthPixels;
+
+            mNativAdView.setAdSize(new AdSize(pxToDp(pxWidth)- 42, pxToDp(pxWidth)));
+
+            AdRequest nativAdRequest = new AdRequest.Builder().build();
+            mNativAdView.loadAd(nativAdRequest);
+            mNativAdView.setAdListener(new AdListener() {
                 @Override
-                public void onAdClosed() {
-                    closeLektion();
+                public void onAdFailedToLoad(int i) {
+                    super.onAdFailedToLoad(i);
+                    FirebaseCrash.report(new Throwable("Failed To Load Nativ Ad (DisplayLektion) Code: " + i));
+                }
+                @Override
+                public void onAdLoaded() {
+                    super.onAdLoaded();
+                    Intent i = new Intent(DisplayLektion.this, NativAdDialog.class);
+                    DisplayLektion.this.startActivity(i);
                 }
             });
-            requestNewInterstitial();
 
             mAdView = new AdView(this);
             mAdView.setAdSize(AdSize.SMART_BANNER);
@@ -126,46 +148,21 @@ public class DisplayLektion extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-                    android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                    clipboard.setText(COPY_MESSAGE + text.getText());
-                } else {
-                    android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                    android.content.ClipData clip = android.content.ClipData.newPlainText(toolbar.getTitle().toString() + " wurde kopiert", COPY_MESSAGE + text.getText());
-                    clipboard.setPrimaryClip(clip);
-                }
+                android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                android.content.ClipData clip = android.content.ClipData.newPlainText(toolbar.getTitle().toString() + " wurde kopiert", COPY_MESSAGE + text.getText());
+                clipboard.setPrimaryClip(clip);
+
                 Toast.makeText(DisplayLektion.this, "Text wurde kopiert", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void requestNewInterstitial() {
-        AdRequest adRequest = new AdRequest.Builder()
-                .build();
-
-        mInterstitialAd.loadAd(adRequest);
+    public static int pxToDp(int px) {
+        return (int) (px / Resources.getSystem().getDisplayMetrics().density);
     }
 
-    @Override
-    public void onBackPressed(){
-        showAd();
-    }
-
-    public void showAd(){
-        if(ds.removeAds == false){
-            if (mInterstitialAd.isLoaded()) {
-                mInterstitialAd.show();
-            } else {
-                finish();
-            }
-        }else {
-            finish();
-        }
-
-    }
-
-    public void closeLektion(){
-        finish();
+    public static int dpToPx(int dp) {
+        return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
 
     @Override

@@ -107,4 +107,15 @@
         android:background="#FF0000"
         android:visibility="invisible"/>
 
+    <TextView
+        android:id="@+id/adSizeIndicator"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text=""
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textViewTestVocLateinTitleNP"
+        android:layout_alignBottom="@+id/buttonTestVocRight"
+        android:layout_marginBottom="12dp"/>
+
 </RelativeLayout>

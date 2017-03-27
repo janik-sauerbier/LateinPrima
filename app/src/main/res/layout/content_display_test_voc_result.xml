@@ -80,7 +80,7 @@
         android:background="@color/colorButton"
         android:textColor="#FFFFFF"
         android:layout_marginRight="16dp"
-        android:layout_marginBottom="70dp"
+        android:layout_marginBottom="16dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:id="@+id/buttonTestVocExit" />
@@ -92,7 +92,7 @@
         android:background="@color/colorButton"
         android:textColor="#FFFFFF"
         android:layout_marginLeft="16dp"
-        android:layout_marginBottom="70dp"
+        android:layout_marginBottom="16dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:id="@+id/buttonTestVocAgain" />

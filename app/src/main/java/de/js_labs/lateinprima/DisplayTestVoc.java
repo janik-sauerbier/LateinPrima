@@ -2,6 +2,7 @@ package de.js_labs.lateinprima;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -26,7 +27,7 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.NativeExpressAdView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.ArrayList;
@@ -44,6 +45,7 @@ public class DisplayTestVoc extends AppCompatActivity implements Button.OnClickL
     private Button proveBtn;
     private Button exit;
     private Button again;
+    private Button closeAdBtn;
     private EditText input;
     private AlertDialog.Builder alertBuilder;
     private boolean clock;
@@ -54,15 +56,14 @@ public class DisplayTestVoc extends AppCompatActivity implements Button.OnClickL
     private int againSelected;
     private int resultCounter = 0;
 
-    private InterstitialAd mInterstitialAd;
+    private NativeExpressAdView mNativAdView;
     private AdView mAdView;
     private ViewTreeObserver.OnGlobalLayoutListener layoutListener;
     private RelativeLayout contentDisplayTestVocNotProve;
     private RelativeLayout contentDisplayTestVocProve;
+    private RelativeLayout contentDisplayTestNativAd;
 
     private FirebaseAnalytics firebaseAnalytics;
-
-    private static boolean closeActivityAfterAd;
 
     private DataStorage ds;
 
@@ -103,8 +104,6 @@ public class DisplayTestVoc extends AppCompatActivity implements Button.OnClickL
         alertBuilder.setPositiveButton("Nochmal", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 resultCounter = 0;
-                closeActivityAfterAd = false;
-                showAd();
                 if(againSelected == 0) {
                     ds.testVocBuffer.clear();
                     ds.testVocBuffer.addAll(Arrays.asList(ds.lektions[ds.currentLektion].vokablels));
@@ -113,9 +112,7 @@ public class DisplayTestVoc extends AppCompatActivity implements Button.OnClickL
                 }else if(againSelected == 2){
                     ds.testVocBuffer = tempAllVocWorng;
                 }
-                if(Build.VERSION.SDK_INT >= 11) {
-                    recreate();
-                }
+                recreate();
             }
         });
         alertBuilder.setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
@@ -133,9 +130,6 @@ public class DisplayTestVoc extends AppCompatActivity implements Button.OnClickL
 
         if(ds.proveInput){
 
-            Bundle bundle = new Bundle();
-            firebaseAnalytics.logEvent("TV-ProveInput", bundle);
-
             latein = (TextView) findViewById(R.id.textViewTestVocLateinP);
             deutsch = (TextView) findViewById(R.id.textViewTestVocDeutschP);
             justRightBtn = (Button) findViewById(R.id.buttonTestVocJustRight);
@@ -145,66 +139,7 @@ public class DisplayTestVoc extends AppCompatActivity implements Button.OnClickL
             justRightBtn.setOnClickListener(this);
             proveBtn.setOnClickListener(this);
 
-            if(ds.removeAds == true){
-                Log.d(ds.LOG_TAG, "Werbung wird nicht angezeigt");
-            }else {
-                Log.d(ds.LOG_TAG, "Werbung wird angezeigt");
-                mInterstitialAd = new InterstitialAd(this);
-
-                if(ds.devMode){
-                    mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
-                }else {
-                    mInterstitialAd.setAdUnitId("ca-app-pub-2790218770120733/9434663605");
-                }
-
-                mInterstitialAd.setAdListener(new AdListener() {
-                    @Override
-                    public void onAdClosed() {
-                        closeAd();
-                    }
-                });
-                requestNewInterstitial();
-
-                mAdView = new AdView(this);
-                mAdView.setAdSize(AdSize.SMART_BANNER);
-                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
-                mAdView.setLayoutParams(layoutParams);
-                if(ds.devMode){
-                    mAdView.setAdUnitId("ca-app-pub-3940256099942544/6300978111");
-                }else {
-                    mAdView.setAdUnitId("ca-app-pub-2790218770120733/2050997601");
-                }
-                contentDisplayTestVocProve.addView(mAdView);
-                AdRequest adRequest = new AdRequest.Builder().build();
-                mAdView.loadAd(adRequest);
-
-                layoutListener = new ViewTreeObserver.OnGlobalLayoutListener(){
-                    @Override
-                    public void onGlobalLayout() {
-                        int height = mAdView.getHeight();
-                        if (height > 0) {
-                            RelativeLayout.LayoutParams parms = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-                            parms.bottomMargin = height + (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
-                            parms.rightMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
-                            parms.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                            parms.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                            proveBtn.setLayoutParams(parms);
-                            RelativeLayout.LayoutParams parms2 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-                            parms2.bottomMargin = height + (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
-                            parms2.leftMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
-                            parms2.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                            parms2.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                            justRightBtn.setLayoutParams(parms2);
-                            if(Build.VERSION.SDK_INT >= 16)
-                                mAdView.getViewTreeObserver().removeOnGlobalLayoutListener(layoutListener);
-                        }
-                    }
-                };
-
-                mAdView.getViewTreeObserver().addOnGlobalLayoutListener(layoutListener);
-            }
+            setupAds();
 
             initProveTest(true);
         }else{
@@ -216,102 +151,123 @@ public class DisplayTestVoc extends AppCompatActivity implements Button.OnClickL
             rightBtn.setOnClickListener(this);
             wrongBtn.setOnClickListener(this);
 
-            if(ds.removeAds == true){
-                Log.d(ds.LOG_TAG, "Werbung wird nicht angezeigt");
-            }else {
-                Log.d(ds.LOG_TAG, "Werbung wird angezeigt");
-                mInterstitialAd = new InterstitialAd(this);
-
-                if(ds.devMode){
-                    mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
-                }else {
-                    mInterstitialAd.setAdUnitId("ca-app-pub-2790218770120733/9434663605");
-                }
-
-                mInterstitialAd.setAdListener(new AdListener() {
-                    @Override
-                    public void onAdClosed() {
-                        closeAd();
-                    }
-                });
-                requestNewInterstitial();
-
-                mAdView = new AdView(this);
-                mAdView.setAdSize(AdSize.SMART_BANNER);
-                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
-                mAdView.setLayoutParams(layoutParams);
-                if(ds.devMode){
-                    mAdView.setAdUnitId("ca-app-pub-3940256099942544/6300978111");
-                }else {
-                    mAdView.setAdUnitId("ca-app-pub-2790218770120733/2050997601");
-                }
-                contentDisplayTestVocNotProve.addView(mAdView);
-                AdRequest adRequest = new AdRequest.Builder().build();
-                mAdView.loadAd(adRequest);
-
-                layoutListener = new ViewTreeObserver.OnGlobalLayoutListener(){
-                    @Override
-                    public void onGlobalLayout() {
-                        int height = mAdView.getHeight();
-                        if (height > 0) {
-                            RelativeLayout.LayoutParams parms = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-                            parms.bottomMargin = height + (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
-                            parms.rightMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
-                            parms.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                            parms.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                            rightBtn.setLayoutParams(parms);
-                            RelativeLayout.LayoutParams parms2 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-                            parms2.bottomMargin = height + (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
-                            parms2.leftMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
-                            parms2.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                            parms2.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                            wrongBtn.setLayoutParams(parms2);
-                            if(Build.VERSION.SDK_INT >= 16)
-                                mAdView.getViewTreeObserver().removeOnGlobalLayoutListener(layoutListener);
-                        }
-                    }
-                };
-
-                mAdView.getViewTreeObserver().addOnGlobalLayoutListener(layoutListener);
-            }
+            setupAds();
 
             initNotProveTest(true);
         }
     }
 
-    private void requestNewInterstitial() {
-        AdRequest adRequest = new AdRequest.Builder()
-                .build();
-
-        mInterstitialAd.loadAd(adRequest);
-    }
-
-    @Override
-    public void onBackPressed(){
-        resultCounter = 0;
-        closeActivityAfterAd = true;
-        showAd();
-    }
-
-    public void showAd(){
-        if(ds.removeAds == false){
-            if (mInterstitialAd.isLoaded()) {
-                mInterstitialAd.show();
-            } else {
-                if(closeActivityAfterAd)
-                    finish();
-            }
+    private void setupAds(){
+        if(ds.removeAds || ds.surveyRemoveAds){
+            Log.d(ds.LOG_TAG, "Werbung wird nicht angezeigt");
         }else {
-            if(closeActivityAfterAd)
-                finish();
+            Log.d(ds.LOG_TAG, "Werbung wird angezeigt");
+
+            mAdView = new AdView(this);
+            mAdView.setAdSize(AdSize.SMART_BANNER);
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
+            mAdView.setLayoutParams(layoutParams);
+
+            if(ds.devMode){
+                mAdView.setAdUnitId("ca-app-pub-3940256099942544/6300978111");
+            }else {
+                mAdView.setAdUnitId("ca-app-pub-2790218770120733/2050997601");
+            }
+
+            if(ds.proveInput){
+                contentDisplayTestVocProve.addView(mAdView);
+            }else {
+                contentDisplayTestVocNotProve.addView(mAdView);
+            }
+
+            AdRequest adRequest = new AdRequest.Builder().build();
+            mAdView.loadAd(adRequest);
+
+            layoutListener = new ViewTreeObserver.OnGlobalLayoutListener(){
+                @Override
+                public void onGlobalLayout() {
+                    int height = mAdView.getHeight();
+                    if (height > 0) {
+                        RelativeLayout.LayoutParams parms = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+                        parms.bottomMargin = height + (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
+                        parms.rightMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
+                        parms.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                        parms.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                        if(ds.proveInput){
+                            proveBtn.setLayoutParams(parms);
+                        }else {
+                            rightBtn.setLayoutParams(parms);
+                        }
+                        RelativeLayout.LayoutParams parms2 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+                        parms2.bottomMargin = height + (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
+                        parms2.leftMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
+                        parms2.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                        parms2.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                        if(ds.proveInput){
+                            justRightBtn.setLayoutParams(parms2);
+                        }else {
+                            wrongBtn.setLayoutParams(parms2);
+                        }
+
+                        if(mNativAdView == null){
+                            mNativAdView = new NativeExpressAdView(DisplayTestVoc.this);
+
+                            if(ds.devMode){
+                                mNativAdView.setAdUnitId("ca-app-pub-3940256099942544/2177258514");
+                            }else {
+                                mNativAdView.setAdUnitId("ca-app-pub-2790218770120733/9090323605");
+                            }
+                            TextView adSizeIndicator = (TextView) findViewById(R.id.adSizeIndicator);
+
+                            RelativeLayout.LayoutParams nativAdLP =  new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+                            nativAdLP.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                            nativAdLP.setMargins(0,0,0,mAdView.getHeight());
+
+                            mNativAdView.setLayoutParams(nativAdLP);
+
+                            mNativAdView.setAdSize(new AdSize(AdSize.FULL_WIDTH, pxToDp(adSizeIndicator.getHeight()) - pxToDp(mAdView.getHeight())));
+
+                            AdRequest nativAdRequest = new AdRequest.Builder().build();
+                            mNativAdView.loadAd(nativAdRequest);
+                        }
+
+                        if(Build.VERSION.SDK_INT >= 16)
+                            mAdView.getViewTreeObserver().removeOnGlobalLayoutListener(layoutListener);
+                    }
+                }
+            };
+
+            mAdView.getViewTreeObserver().addOnGlobalLayoutListener(layoutListener);
         }
     }
 
-    public void closeAd(){
-        if(closeActivityAfterAd)
-            finish();
+    public static int pxToDp(int px) {
+        return (int) (px / Resources.getSystem().getDisplayMetrics().density);
+    }
+
+    public void showAd(){
+        if(ds.removeAds || ds.surveyRemoveAds || mNativAdView == null){
+            showResults();
+        } else {
+            setContentView(R.layout.activity_display_test_voc_nativ_ad);
+            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            toolbar.setTitle("Lektion " + (ds.currentLektion + 1));
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+            contentDisplayTestNativAd = (RelativeLayout) findViewById(R.id.contentDisplayTestVocNativAdRl);
+            closeAdBtn = (Button) findViewById(R.id.buttonCloseAd);
+
+            closeAdBtn.setOnClickListener(this);
+
+            AdRequest nativAdRequest = new AdRequest.Builder().build();
+            mNativAdView.loadAd(nativAdRequest);
+
+            contentDisplayTestNativAd.addView(mNativAdView);
+
+        }
     }
 
     @Override
@@ -335,51 +291,55 @@ public class DisplayTestVoc extends AppCompatActivity implements Button.OnClickL
         return super.onOptionsItemSelected(item);
     }
 
+    private void showResults(){
+        int right = 0;
+        int wrong = 0;
+        for(int i = 0; i< result.size(); i++){
+            if (result.get(i)){
+                right++;
+            }else {
+                wrong++;
+            }
+        }
+        setContentView(R.layout.activity_display_test_voc_result);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("Ergebnis");
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        exit = (Button) findViewById(R.id.buttonTestVocExit);
+        exit.setOnClickListener(this);
+        again = (Button) findViewById(R.id.buttonTestVocAgain);
+        again.setOnClickListener(this);
+        TextView rightCount = (TextView) findViewById(R.id.textViewRightCount);
+        rightCount.setText(Integer.toString(right));
+        rightCount.setTextSize(20 + right * 2);
+        TextView wrongCount = (TextView) findViewById(R.id.textViewWrongCount);
+        wrongCount.setText(Integer.toString(wrong));
+        wrongCount.setTextSize(20 + wrong * 2);
+        RatingBar ratingBar = (RatingBar) findViewById(R.id.ratingBar);
+        ratingBar.setStepSize(24f);
+        double dRight = (double) right;
+        double dWrong = (double) wrong;
+        double rating = (dRight / (dRight + dWrong)) * 6;
+        ratingBar.setRating(((float) rating));
+        ratingBar.setIsIndicator(true);
+        TextView grade = (TextView) findViewById(R.id.textViewGrade);
+        rating = dRight / (dRight + dWrong) * 1000;
+        rating = Math.round(rating) / 10;
+        grade.setText(Double.toString(rating) + " %");
+
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, Integer.toString(ds.currentLektion+1));
+        bundle.putInt(FirebaseAnalytics.Param.VALUE, (int) rating);
+        firebaseAnalytics.logEvent(ANALYTICS_EVENT_TEST_VOC_RESULT, bundle);
+    }
+
 
     private void initNotProveTest(boolean clock){
         if(ds.testVocBuffer.size() == 0 && clock == true){
-            int right = 0;
-            int wrong = 0;
-            for(int i = 0; i< result.size(); i++){
-                if (result.get(i)){
-                    right++;
-                }else {
-                    wrong++;
-                }
-            }
-            setContentView(R.layout.activity_display_test_voc_result);
-
-            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-            toolbar.setTitle("Ergebnis");
-            setSupportActionBar(toolbar);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-            exit = (Button) findViewById(R.id.buttonTestVocExit);
-            exit.setOnClickListener(this);
-            again = (Button) findViewById(R.id.buttonTestVocAgain);
-            again.setOnClickListener(this);
-            TextView rightCount = (TextView) findViewById(R.id.textViewRightCount);
-            rightCount.setText(Integer.toString(right));
-            rightCount.setTextSize(20 + right * 2);
-            TextView wrongCount = (TextView) findViewById(R.id.textViewWrongCount);
-            wrongCount.setText(Integer.toString(wrong));
-            wrongCount.setTextSize(20 + wrong * 2);
-            RatingBar ratingBar = (RatingBar) findViewById(R.id.ratingBar);
-            ratingBar.setStepSize(24f);
-            double dRight = (double) right;
-            double dWrong = (double) wrong;
-            double rating = (dRight / (dRight + dWrong)) * 6;
-            ratingBar.setRating(((float) rating));
-            ratingBar.setIsIndicator(true);
-            TextView grade = (TextView) findViewById(R.id.textViewGrade);
-            rating = dRight / (dRight + dWrong) * 1000;
-            rating = Math.round(rating) / 10;
-            grade.setText(Double.toString(rating) + " %");
-
-            Bundle bundle = new Bundle();
-            bundle.putString(FirebaseAnalytics.Param.ITEM_ID, Integer.toString(ds.currentLektion+1));
-            bundle.putInt(FirebaseAnalytics.Param.VALUE, (int) rating);
-            firebaseAnalytics.logEvent(ANALYTICS_EVENT_TEST_VOC_RESULT, bundle);
+            showAd();
         }else {
             if(clock){
                 Random rand = new Random();
@@ -403,48 +363,7 @@ public class DisplayTestVoc extends AppCompatActivity implements Button.OnClickL
 
     private void initProveTest(boolean clock){
         if(ds.testVocBuffer.size() == 0 && clock == true){
-            int right = 0;
-            int wrong = 0;
-            for(int i = 0; i< result.size(); i++){
-                if (result.get(i)){
-                    right++;
-                }else {
-                    wrong++;
-                }
-            }
-            setContentView(R.layout.activity_display_test_voc_result);
-
-            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-            toolbar.setTitle("Ergebnisse");
-            setSupportActionBar(toolbar);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-            exit = (Button) findViewById(R.id.buttonTestVocExit);
-            exit.setOnClickListener(this);
-            again = (Button) findViewById(R.id.buttonTestVocAgain);
-            again.setOnClickListener(this);
-            TextView rightCount = (TextView) findViewById(R.id.textViewRightCount);
-            rightCount.setText(Integer.toString(right));
-            rightCount.setTextSize(20 + right * 2);
-            TextView wrongCount = (TextView) findViewById(R.id.textViewWrongCount);
-            wrongCount.setText(Integer.toString(wrong));
-            wrongCount.setTextSize(20 + wrong * 2);
-            RatingBar ratingBar = (RatingBar) findViewById(R.id.ratingBar);
-            ratingBar.setStepSize(24f);
-            double dRight = (double) right;
-            double dWrong = (double) wrong;
-            double rating = (dRight / (dRight + dWrong)) * 6;
-            ratingBar.setRating(((float) rating));
-            ratingBar.setIsIndicator(true);
-            TextView grade = (TextView) findViewById(R.id.textViewGrade);
-            rating = dRight / (dRight + dWrong) * 1000;
-            rating = Math.round(rating) / 10;
-            grade.setText(Double.toString(rating) + " %");
-
-            Bundle bundle = new Bundle();
-            bundle.putString(FirebaseAnalytics.Param.ITEM_ID, Integer.toString(ds.currentLektion+1));
-            bundle.putInt(FirebaseAnalytics.Param.VALUE, (int) rating);
-            firebaseAnalytics.logEvent(ANALYTICS_EVENT_TEST_VOC_RESULT, bundle);
+            showAd();
         }else {
             if(clock){
                 Random rand = new Random();
@@ -567,6 +486,8 @@ public class DisplayTestVoc extends AppCompatActivity implements Button.OnClickL
             onBackPressed();
         }else if(v == again){
             alertBuilder.show();
+        }else if(v == closeAdBtn){
+            showResults();
         }
     }
 }

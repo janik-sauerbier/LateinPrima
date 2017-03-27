@@ -1,5 +1,7 @@
 package de.js_labs.lateinprima;
 
+import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,13 +23,15 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.NativeExpressAdView;
+import com.google.firebase.crash.FirebaseCrash;
 
 public class DisplayVoc extends AppCompatActivity {
     private TableLayout table;
     private TableRow.LayoutParams layoutParamsL;
     private TableRow.LayoutParams layoutParamsD;
 
-    private InterstitialAd mInterstitialAd;
+    public static NativeExpressAdView mNativAdView;
     private AdView mAdView;
     private ViewTreeObserver.OnGlobalLayoutListener layoutListener;
     private RelativeLayout contentDisplayVoc;
@@ -67,25 +71,44 @@ public class DisplayVoc extends AppCompatActivity {
             addVoc(vokablel);
         }
 
-        if(ds.removeAds == true){
+        if(ds.removeAds || ds.surveyRemoveAds){
             Log.d(ds.LOG_TAG, "Werbung wird nicht angezeigt");
         }else {
             Log.d(ds.LOG_TAG, "Werbung wird angezeigt");
-            mInterstitialAd = new InterstitialAd(this);
+            mNativAdView = new NativeExpressAdView(this);
 
             if(ds.devMode){
-                mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+                mNativAdView.setAdUnitId("ca-app-pub-3940256099942544/2177258514");
             }else {
-                mInterstitialAd.setAdUnitId("ca-app-pub-2790218770120733/5004464001");
+                mNativAdView.setAdUnitId("ca-app-pub-2790218770120733/7756204402");
             }
 
-            mInterstitialAd.setAdListener(new AdListener() {
+            RelativeLayout.LayoutParams nativAdLP =  new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+            nativAdLP.addRule(RelativeLayout.BELOW, R.id.nad_title);
+            nativAdLP.setMargins(dpToPx(5), 0, dpToPx(5), dpToPx(5));
+
+            mNativAdView.setLayoutParams(nativAdLP);
+
+            int pxWidth = this.getResources().getDisplayMetrics().widthPixels;
+
+            mNativAdView.setAdSize(new AdSize(pxToDp(pxWidth)- 42, pxToDp(pxWidth)));
+
+            AdRequest nativAdRequest = new AdRequest.Builder().build();
+            mNativAdView.loadAd(nativAdRequest);
+            mNativAdView.setAdListener(new AdListener() {
                 @Override
-                public void onAdClosed() {
-                    closeLektion();
+                public void onAdFailedToLoad(int i) {
+                    super.onAdFailedToLoad(i);
+                    FirebaseCrash.report(new Throwable("Failed To Load Nativ Ad (DisplayVoc) Code: " + i));
+                }
+                @Override
+                public void onAdLoaded() {
+                    super.onAdLoaded();
+                    Log.d("test", "onAdLoaded()");
+                    Intent i = new Intent(DisplayVoc.this, NativAdDialog.class);
+                    DisplayVoc.this.startActivity(i);
                 }
             });
-            requestNewInterstitial();
 
             mAdView = new AdView(this);
             mAdView.setAdSize(AdSize.SMART_BANNER);
@@ -122,15 +145,12 @@ public class DisplayVoc extends AppCompatActivity {
 
     }
 
-    private void requestNewInterstitial() {
-        AdRequest adRequest = new AdRequest.Builder()
-                .build();
-
-        mInterstitialAd.loadAd(adRequest);
+    public static int pxToDp(int px) {
+        return (int) (px / Resources.getSystem().getDisplayMetrics().density);
     }
 
-    public void closeLektion(){
-        finish();
+    public static int dpToPx(int dp) {
+        return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
 
     private void addVoc(Vokablel vokablel){
@@ -164,24 +184,6 @@ public class DisplayVoc extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onBackPressed(){
-        showAd();
-    }
-
-    public void showAd(){
-        if(ds.removeAds == false){
-            if (mInterstitialAd.isLoaded()) {
-                mInterstitialAd.show();
-            } else {
-                finish();
-            }
-        }else {
-            finish();
-        }
-
     }
 
     @Override
