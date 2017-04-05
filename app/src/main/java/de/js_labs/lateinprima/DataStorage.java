@@ -16,6 +16,8 @@ public class DataStorage {
     public boolean devMode;
     public boolean surveyRemoveAds;
     public boolean prima_surveys;
+    public int prima_survey_reward_multiplier;
+    public String rights_info;
     public Long surveyTimeStamp;
     public int currentSurveyPrice;
     public boolean proveInput;

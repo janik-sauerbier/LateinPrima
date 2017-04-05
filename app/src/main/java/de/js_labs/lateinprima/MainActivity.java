@@ -38,7 +38,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.ads.formats.NativeAdView;
+import com.appodeal.ads.Appodeal;
+
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -104,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public CheckBox erwähnenCheckBox;
     public EditText nameEditText;
     public EditText inhaltEditText;
+    public TextView rightsInfoTextView;
     public StableArrayAdapter adapterListView;
     public FloatingActionButton surveyTimerFab;
     private AlertDialog.Builder alertBuilder;
@@ -129,6 +131,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Home");
+
+        Appodeal.disableLocationPermissionCheck();
+        Appodeal.initialize(this, "55fe782d03711156879af959c82e1d620827c078e498d45b", Appodeal.BANNER | Appodeal.NATIVE | Appodeal.INTERSTITIAL);
 
         setupDataStorage();
 
@@ -261,6 +266,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         firebaseRemoteConfig.fetch(14400);
 
         ds.prima_surveys = firebaseRemoteConfig.getBoolean("prima_surveys");
+        ds.prima_survey_reward_multiplier = (int) firebaseRemoteConfig.getLong("prima_survey_reward_multiplier");
+        ds.rights_info = firebaseRemoteConfig.getString("prima_rights_info");
 
         if(ds.devMode){
             ds.prima_surveys = true;
@@ -329,12 +336,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             Log.d("Pollfish", "Survey Completed! Playful: " + playfulSurvey + " / Price: " + surveyPrice + " CENT");
                             ds.received_survey = false;
                             if(ds.surveyTimeStamp < System.currentTimeMillis()){
-                                ds.surveyTimeStamp = System.currentTimeMillis() + (surveyPrice + 20) * 3600000;
+                                ds.surveyTimeStamp = System.currentTimeMillis() + (surveyPrice*ds.prima_survey_reward_multiplier) * 3600000;
                             }else {
-                                ds.surveyTimeStamp = ds.surveyTimeStamp + (surveyPrice + 20) * 3600000;
+                                ds.surveyTimeStamp = ds.surveyTimeStamp + (surveyPrice*ds.prima_survey_reward_multiplier) * 3600000;
                             }
                             sharedEditor.putLong(SURVEY_TIMESTAMP, ds.surveyTimeStamp);
                             sharedEditor.commit();
+                            PollFish.hide();
                             testSurveyTimestamp();
                         }
                     }).customMode(false).releaseMode(!ds.devMode).build();
@@ -350,9 +358,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void showSurveyDialog(int price){
+        int days = (price*ds.prima_survey_reward_multiplier)/24;
+        int hours = price*ds.prima_survey_reward_multiplier - days*24;
+
         surveyDialogBuilder = new AlertDialog.Builder(this)
                 .setTitle("Neue Umfrage")
-                .setMessage(Html.fromHtml("Nimm an einer kurzen Umfrage teil und <B>entferne die Werbung</B> für (weitere): <br/><br/><h1>" + (price + 20) + " Stunden</h1><B>Hinweis:</B> Solltest du aufgrund deiner Anworten nicht teilnahmeberechtigt sein wird die Werbung nicht entfernt. Außerdem hast du die Chance einen kleinen <B>Preis</B> zu gewinnen!"))
+                .setMessage(Html.fromHtml("Nimm an einer kurzen Umfrage teil und <B>entferne die Werbung</B> für (weitere): <br/><br/><h1>" + days + " Tage " + hours + " Stunden</h1><B>Hinweis:</B> Vor deiner ersten Umfrage werden einmalig demografische Fragen gestellt. Sollte die Umfrage wegen deiner Angaben nicht mehr zu dir passen wird die Werbung nicht entfernt. Nachdem du die demografischen Fragen einmal beantwortet hast erhälst du nur noch passende Umfragen."))
                 .setPositiveButton("Teilnehmen", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -361,6 +372,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         }else {
                             PollFish.initWith(MainActivity.this, PFparamsBuilder);
                         }
+
+                        Bundle bundle = new Bundle();
+                        firebaseAnalytics.logEvent("survey_participation", bundle);
                     }
                 })
                 .setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
@@ -368,6 +382,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     public void onClick(DialogInterface dialogInterface, int i) {
                         surveyDialogBuilder.cancel();
                         ds.received_survey = false;
+
+                        Bundle bundle = new Bundle();
+                        firebaseAnalytics.logEvent("survey_canceled", bundle);
                     }
                 })
                 .setCancelable(false)
@@ -397,7 +414,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             else
                 finish();
         }
-        if(ds.prima_surveys){
+        if(ds.prima_surveys && PFparamsBuilder != null){
             PollFish.initWith(this, PFparamsBuilder);
             PollFish.hide();
         }
@@ -468,6 +485,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             appBarMain.removeView(contentHome);
             appBarMain.removeView(contentSend);
             appBarMain.addView(contentRightsInfo);
+
+            rightsInfoTextView = (TextView) findViewById(R.id.textViewRightsInfo);
+            ds.rights_info = ds.rights_info.replace("\\n", "\n");
+            rightsInfoTextView.setText(ds.rights_info);
 
             Bundle bundle = new Bundle();
             bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "open rights info UI");

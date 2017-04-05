@@ -17,7 +17,7 @@
         android:textColor="@color/colorWhite"
         android:background="@color/colorPrimary"
         android:textSize="25dp"
-        android:id="@+id/textViewAdTitle"
+        android:id="@+id/textViewAdSign"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
@@ -34,27 +34,99 @@
         android:layout_alignParentTop="true"
         android:textColor="@color/colorWhite"
         android:text="Schließen"
-        android:layout_alignBottom="@+id/textViewAdTitle"
+        android:layout_alignBottom="@+id/textViewAdSign"
         android:background="@color/colorPrimary"
         style="?android:attr/borderlessButtonStyle"
         />
 
-    <TextView
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingBottom="10dp"
-        android:paddingTop="4dp"
+    <ImageView
+        android:layout_margin="16dp"
+        android:id="@+id/imageViewAdLogo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Du kannst die Werbung einen kleine Spende entfernen :D"
-        android:textColor="@color/colorWhite"
-        android:background="@color/colorPrimary"
-        android:textSize="12dp"
-        android:id="@+id/textViewAdDescribtion"
-        android:layout_below="@+id/textViewAdTitle"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"/>
+        android:maxWidth="80dp"
+        android:maxHeight="80dp"
+        android:adjustViewBounds="true"
+        android:layout_below="@+id/textViewAdSign" />
+
+    <TextView
+        android:id="@+id/textViewAdTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewAdSign"
+        android:layout_toRightOf="@+id/imageViewAdLogo"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="16dp"
+        android:textColor="@android:color/black"
+        android:textSize="20dp"
+        android:text="Lädt..." />
+
+    <RatingBar
+        android:id="@+id/ratingBarAd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="?android:attr/ratingBarStyleSmall"
+        android:layout_alignTop="@+id/textViewRatingAd"
+        android:layout_alignLeft="@+id/textViewAdTitle"
+        android:layout_alignStart="@+id/textViewAdTitle" />
+
+    <TextView
+        android:id="@+id/textViewRatingAd"
+        android:layout_margin="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewAdTitle"
+        android:layout_toEndOf="@+id/ratingBarAd"
+        android:layout_toRightOf="@+id/ratingBarAd"
+        android:text="0.0" />
+
+    <TextView
+        android:id="@+id/textViewDescribtionAd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewRatingAd"
+        android:textColor="#494949"
+        android:ellipsize="end"
+        android:text="Lädt..."
+        android:maxLines="4"
+        android:layout_alignRight="@+id/textViewAdTitle"
+        android:layout_alignEnd="@+id/textViewAdTitle"
+        android:layout_alignLeft="@+id/ratingBarAd"
+        android:layout_alignStart="@+id/ratingBarAd" />
+
+    <com.appodeal.ads.AppodealMediaView
+        android:id="@+id/appodealMediaView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewDescribtionAd"
+        android:layout_above="@+id/buttonAd"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:padding="16dp"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Lädt..."
+        android:id="@+id/buttonAd"
+        android:textColor="@color/colorWhite"
+        android:background="@color/colorButton"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true" />
+
+    <ImageView
+        android:id="@+id/imageViewAdContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/textViewDescribtionAd"
+        android:layout_above="@+id/buttonAd"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp" />
 
 </RelativeLayout>

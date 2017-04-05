@@ -5,8 +5,6 @@
 
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="rightsInfo">Informationen zum Urheberrecht und Nutzungsbedingungen der App:\n\nUrheberrechtsgesetz:\n§ 3 Bearbeitungen\nÜbersetzungen und andere Bearbeitungen eines Werkes, die persönliche geistige Schöpfungen des Bearbeiters sind, werden unbeschadet des Urheberrechts am bearbeiteten Werk wie selbständige Werke geschätzt. Die nur unwesentliche Bearbeitung eines nicht geschätzten Werkes der Musik wird nicht als selbständiges Werk geschätzt.\n\nNutzungsbedingungen:\nDas Urheberrecht oder das ausschließliche Nutzungsrecht aller Übersetzungen liegt bei dem App Ersteller. Durch das Einsenden eines Beitrags wird dem App Ersteller von dem Einsender das unbegrenzte und ausschließliche Nutzungsrecht dafür zugesichert. Der Einsender verpflichtet sich dazu der Urheber des Beitrags zu sein. Eine namentliche Erwähnung des Einsenders/Urhebers wird angeboten, aber nicht garantiert.\n    </string>
-
     <string name="removeAdsText">Entferne die Werbung/Umfragen oder stelle einen bereits getätigten Einkauf wieder her. Es kostet weniger als ein Kaffee ;D</string>
 
     <string name="title_activity_display_lektion">DisplayLektion</string>

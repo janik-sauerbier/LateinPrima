@@ -11,27 +11,27 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.NativeExpressAdView;
+import com.appodeal.ads.Appodeal;
+import com.appodeal.ads.AppodealMediaView;
+import com.appodeal.ads.Native;
+import com.appodeal.ads.NativeAd;
+import com.appodeal.ads.NativeCallbacks;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 public class DisplayTestVoc extends AppCompatActivity implements Button.OnClickListener {
@@ -56,12 +56,7 @@ public class DisplayTestVoc extends AppCompatActivity implements Button.OnClickL
     private int againSelected;
     private int resultCounter = 0;
 
-    private NativeExpressAdView mNativAdView;
-    private AdView mAdView;
-    private ViewTreeObserver.OnGlobalLayoutListener layoutListener;
-    private RelativeLayout contentDisplayTestVocNotProve;
-    private RelativeLayout contentDisplayTestVocProve;
-    private RelativeLayout contentDisplayTestNativAd;
+    private NativeAd nativeAd;
 
     private FirebaseAnalytics firebaseAnalytics;
 
@@ -93,9 +88,6 @@ public class DisplayTestVoc extends AppCompatActivity implements Button.OnClickL
         tempAllVoc.addAll(ds.testVocBuffer);
         tempAllVocWorng = new ArrayList<Vokablel>();
         againSelected = 0;
-
-        contentDisplayTestVocNotProve = (RelativeLayout) findViewById(R.id.contentDisplayTestVocNotProveRl);
-        contentDisplayTestVocProve = (RelativeLayout) findViewById(R.id.contentDisplayTestVocProveRl);
 
         firebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
@@ -163,92 +155,39 @@ public class DisplayTestVoc extends AppCompatActivity implements Button.OnClickL
         }else {
             Log.d(ds.LOG_TAG, "Werbung wird angezeigt");
 
-            mAdView = new AdView(this);
-            mAdView.setAdSize(AdSize.SMART_BANNER);
-            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-            layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
-            mAdView.setLayoutParams(layoutParams);
-
-            if(ds.devMode){
-                mAdView.setAdUnitId("ca-app-pub-3940256099942544/6300978111");
-            }else {
-                mAdView.setAdUnitId("ca-app-pub-2790218770120733/2050997601");
-            }
-
-            if(ds.proveInput){
-                contentDisplayTestVocProve.addView(mAdView);
-            }else {
-                contentDisplayTestVocNotProve.addView(mAdView);
-            }
-
-            AdRequest adRequest = new AdRequest.Builder().build();
-            mAdView.loadAd(adRequest);
-
-            layoutListener = new ViewTreeObserver.OnGlobalLayoutListener(){
+            Appodeal.setBannerViewId(R.id.tv_banner);
+            Appodeal.show(this, Appodeal.BANNER_VIEW);
+            Appodeal.setAutoCacheNativeMedia(true);
+            Appodeal.setAutoCacheNativeIcons(true);
+            Appodeal.setNativeAdType(Native.NativeAdType.Video);
+            Appodeal.cache(this, Appodeal.NATIVE);
+            Appodeal.setNativeCallbacks(new NativeCallbacks() {
                 @Override
-                public void onGlobalLayout() {
-                    int height = mAdView.getHeight();
-                    if (height > 0) {
-                        RelativeLayout.LayoutParams parms = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-                        parms.bottomMargin = height + (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
-                        parms.rightMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
-                        parms.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                        parms.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                        if(ds.proveInput){
-                            proveBtn.setLayoutParams(parms);
-                        }else {
-                            rightBtn.setLayoutParams(parms);
-                        }
-                        RelativeLayout.LayoutParams parms2 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-                        parms2.bottomMargin = height + (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
-                        parms2.leftMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
-                        parms2.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                        parms2.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                        if(ds.proveInput){
-                            justRightBtn.setLayoutParams(parms2);
-                        }else {
-                            wrongBtn.setLayoutParams(parms2);
-                        }
-
-                        if(mNativAdView == null){
-                            mNativAdView = new NativeExpressAdView(DisplayTestVoc.this);
-
-                            if(ds.devMode){
-                                mNativAdView.setAdUnitId("ca-app-pub-3940256099942544/2177258514");
-                            }else {
-                                mNativAdView.setAdUnitId("ca-app-pub-2790218770120733/9090323605");
-                            }
-                            TextView adSizeIndicator = (TextView) findViewById(R.id.adSizeIndicator);
-
-                            RelativeLayout.LayoutParams nativAdLP =  new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-                            nativAdLP.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                            nativAdLP.setMargins(0,0,0,mAdView.getHeight());
-
-                            mNativAdView.setLayoutParams(nativAdLP);
-
-                            mNativAdView.setAdSize(new AdSize(AdSize.FULL_WIDTH, pxToDp(adSizeIndicator.getHeight()) - pxToDp(mAdView.getHeight())));
-
-                            AdRequest nativAdRequest = new AdRequest.Builder().build();
-                            mNativAdView.loadAd(nativAdRequest);
-                        }
-
-                        if(Build.VERSION.SDK_INT >= 16)
-                            mAdView.getViewTreeObserver().removeOnGlobalLayoutListener(layoutListener);
-                    }
+                public void onNativeLoaded(List<NativeAd> list) {
+                    nativeAd = list.get(0);
+                    Log.d("test", "onNativeLoaded()");
                 }
-            };
 
-            mAdView.getViewTreeObserver().addOnGlobalLayoutListener(layoutListener);
+                @Override
+                public void onNativeFailedToLoad() {
+                    Log.d("test", "onNativeFailedToLoad()");
+                }
+
+                @Override
+                public void onNativeShown(NativeAd nativeAd) {
+
+                }
+
+                @Override
+                public void onNativeClicked(NativeAd nativeAd) {
+
+                }
+            });
         }
     }
 
-    public static int pxToDp(int px) {
-        return (int) (px / Resources.getSystem().getDisplayMetrics().density);
-    }
-
     public void showAd(){
-        if(ds.removeAds || ds.surveyRemoveAds || mNativAdView == null){
+        if(ds.removeAds || ds.surveyRemoveAds || nativeAd == null){
             showResults();
         } else {
             setContentView(R.layout.activity_display_test_voc_nativ_ad);
@@ -257,16 +196,39 @@ public class DisplayTestVoc extends AppCompatActivity implements Button.OnClickL
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-            contentDisplayTestNativAd = (RelativeLayout) findViewById(R.id.contentDisplayTestVocNativAdRl);
             closeAdBtn = (Button) findViewById(R.id.buttonCloseAd);
-
             closeAdBtn.setOnClickListener(this);
 
-            AdRequest nativAdRequest = new AdRequest.Builder().build();
-            mNativAdView.loadAd(nativAdRequest);
+            TextView adTitle = (TextView) findViewById(R.id.textViewAdTitle);
+            ImageView adLogo = (ImageView) findViewById(R.id.imageViewAdLogo);
+            Button adBtn = (Button) findViewById(R.id.buttonAd);
+            RatingBar adRating = (RatingBar) findViewById(R.id.ratingBarAd);
+            TextView adRatingText = (TextView) findViewById(R.id.textViewRatingAd);
+            TextView adDescribtion = (TextView) findViewById(R.id.textViewDescribtionAd);
+            AppodealMediaView appodealMediaView = (AppodealMediaView) findViewById(R.id.appodealMediaView);
+            ImageView adImage = (ImageView) findViewById(R.id.imageViewAdContent);
+            View providerView = nativeAd.getProviderView(this);
 
-            contentDisplayTestNativAd.addView(mNativAdView);
-
+            adTitle.setText(nativeAd.getTitle());
+            adLogo.setImageBitmap(nativeAd.getIcon());
+            adBtn.setText(nativeAd.getCallToAction());
+            adRating.setMax(5);
+            adRating.setStepSize(0.1f);
+            adRating.setRating(nativeAd.getRating());
+            BigDecimal roundfinalPrice = new BigDecimal(nativeAd.getRating()).setScale(1, BigDecimal.ROUND_HALF_UP);
+            adRatingText.setText(roundfinalPrice.toString());
+            adDescribtion.setText(nativeAd.getDescription());
+            if (providerView != null) {
+                RelativeLayout providerViewContainer = (RelativeLayout) findViewById(R.id.contentDisplayTestVocNativAdRl);
+                providerViewContainer.addView(providerView);
+            }
+            if (nativeAd.containsVideo()) {
+                nativeAd.setAppodealMediaView(appodealMediaView);
+                adImage.setVisibility(View.GONE);
+            } else {
+                appodealMediaView.setVisibility(View.GONE);
+                adImage.setImageBitmap(nativeAd.getImage());
+            }
         }
     }
 

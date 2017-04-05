@@ -76,7 +76,7 @@
         android:id="@+id/buttonTestVocProve"
         android:textColor="@color/colorWhite"
         android:background="@color/colorButton"
-        android:layout_alignParentBottom="true"
+        android:layout_above="@+id/tv_banner"
         android:layout_alignParentRight="true" />
 
     <Button
@@ -85,7 +85,7 @@
         android:layout_height="wrap_content"
         android:text="War Richtig"
         android:id="@+id/buttonTestVocJustRight"
-        android:layout_alignParentBottom="true"
+        android:layout_above="@+id/tv_banner"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginLeft="16dp"
@@ -94,15 +94,10 @@
         android:background="#00A827"
         android:visibility="invisible"/>
 
-    <TextView
-        android:id="@+id/adSizeIndicator"
+    <com.appodeal.ads.BannerView
+        android:id="@+id/tv_banner"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text=""
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/textViewTestVocLateinTitleP"
-        android:layout_alignBottom="@+id/buttonTestVocProve"
-        android:layout_marginBottom="12dp"/>
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" />
 
 </RelativeLayout>

@@ -4,4 +4,12 @@
         <key>prima_surveys</key>
         <value>false</value>
     </entry>
+    <entry>
+        <key>prima_rights_info</key>
+        <value>Informationen zum Urheberrecht und Nutzungsbedingungen der App:\n\nUrheberrechtsgesetz:\n§ 3 Bearbeitungen\nÜbersetzungen und andere Bearbeitungen eines Werkes, die persönliche geistige Schöpfungen des Bearbeiters sind, werden unbeschadet des Urheberrechts am bearbeiteten Werk wie selbständige Werke geschätzt. Die nur unwesentliche Bearbeitung eines nicht geschätzten Werkes der Musik wird nicht als selbständiges Werk geschätzt.\n\nNutzungsbedingungen:\nDas Urheberrecht oder das ausschließliche Nutzungsrecht aller Übersetzungen liegt bei dem App Ersteller. Durch das Einsenden eines Beitrags wird dem App Ersteller von dem Einsender das unbegrenzte und ausschließliche Nutzungsrecht dafür zugesichert. Der Einsender verpflichtet sich dazu der Urheber des Beitrags zu sein. Eine namentliche Erwähnung des Einsenders/Urhebers wird angeboten, aber nicht garantiert.</value>
+    </entry>
+    <entry>
+        <key>prima_survey_reward_multiplier</key>
+        <value>1</value>
+    </entry>
 </defaultsMap>
