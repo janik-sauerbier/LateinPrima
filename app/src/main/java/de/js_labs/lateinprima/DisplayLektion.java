@@ -1,6 +1,6 @@
 package de.js_labs.lateinprima;
 
-import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -10,9 +10,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.appodeal.ads.Appodeal;
+import com.google.firebase.crash.FirebaseCrash;
 
 public class DisplayLektion extends AppCompatActivity {
 
@@ -49,7 +49,6 @@ public class DisplayLektion extends AppCompatActivity {
 
             Appodeal.setBannerViewId(R.id.dl_banner);
             Appodeal.show(this, Appodeal.BANNER_VIEW);
-            Appodeal.isLoaded(Appodeal.INTERSTITIAL);
         }
 
         toolbar.setTitle("Lektion " + (ds.currentLektion + 1));
@@ -58,11 +57,15 @@ public class DisplayLektion extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                android.content.ClipData clip = android.content.ClipData.newPlainText(toolbar.getTitle().toString() + " wurde kopiert", COPY_MESSAGE + text.getText());
-                clipboard.setPrimaryClip(clip);
-
-                Toast.makeText(DisplayLektion.this, "Text wurde kopiert", Toast.LENGTH_SHORT).show();
+                try {
+                    Intent i = new Intent(Intent.ACTION_SEND);
+                    i.setType("text/plain");
+                    String text = COPY_MESSAGE + "Lektion " + (ds.currentLektion + 1) + "\n\n" + ds.lektions[ds.currentLektion].data;
+                    i.putExtra(Intent.EXTRA_TEXT, text);
+                    startActivity(Intent.createChooser(i, "Text teilen über..."));
+                } catch(Exception e) {
+                    FirebaseCrash.report(e);
+                }
             }
         });
     }

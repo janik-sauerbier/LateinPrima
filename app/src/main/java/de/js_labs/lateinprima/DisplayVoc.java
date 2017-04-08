@@ -61,7 +61,6 @@ public class DisplayVoc extends AppCompatActivity {
 
             Appodeal.setBannerViewId(R.id.dv_banner);
             Appodeal.show(this, Appodeal.BANNER_VIEW);
-            Appodeal.isLoaded(Appodeal.INTERSTITIAL);
         }
 
     }

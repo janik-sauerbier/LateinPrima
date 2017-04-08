@@ -45,7 +45,9 @@
         android:layout_below="@+id/textViewTestVocLateinTitleNP"
         android:layout_above="@+id/textViewTestVocDeutschTitleNP"
         android:layout_alignLeft="@+id/textViewTestVocLateinTitleNP"
-        android:layout_alignStart="@+id/textViewTestVocLateinTitleNP">
+        android:layout_alignStart="@+id/textViewTestVocLateinTitleNP"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true">
 
         <TextView
             android:layout_width="wrap_content"
@@ -65,7 +67,9 @@
         android:layout_below="@+id/textViewTestVocDeutschTitleNP"
         android:layout_above="@+id/buttonTestVocRight"
         android:layout_alignLeft="@+id/textViewTestVocDeutschTitleNP"
-        android:layout_alignStart="@+id/textViewTestVocDeutschTitleNP">
+        android:layout_alignStart="@+id/textViewTestVocDeutschTitleNP"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true">
 
         <TextView
             android:layout_width="wrap_content"
@@ -80,7 +84,6 @@
 
     <Button
         android:padding="16dp"
-        style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Aufdecken"

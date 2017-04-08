@@ -2,9 +2,7 @@ package de.js_labs.lateinprima;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.res.Resources;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -23,7 +21,6 @@ import android.widget.TextView;
 
 import com.appodeal.ads.Appodeal;
 import com.appodeal.ads.AppodealMediaView;
-import com.appodeal.ads.Native;
 import com.appodeal.ads.NativeAd;
 import com.appodeal.ads.NativeCallbacks;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -159,18 +156,15 @@ public class DisplayTestVoc extends AppCompatActivity implements Button.OnClickL
             Appodeal.show(this, Appodeal.BANNER_VIEW);
             Appodeal.setAutoCacheNativeMedia(true);
             Appodeal.setAutoCacheNativeIcons(true);
-            Appodeal.setNativeAdType(Native.NativeAdType.Video);
             Appodeal.cache(this, Appodeal.NATIVE);
             Appodeal.setNativeCallbacks(new NativeCallbacks() {
                 @Override
                 public void onNativeLoaded(List<NativeAd> list) {
                     nativeAd = list.get(0);
-                    Log.d("test", "onNativeLoaded()");
                 }
 
                 @Override
                 public void onNativeFailedToLoad() {
-                    Log.d("test", "onNativeFailedToLoad()");
                 }
 
                 @Override
@@ -204,9 +198,8 @@ public class DisplayTestVoc extends AppCompatActivity implements Button.OnClickL
             Button adBtn = (Button) findViewById(R.id.buttonAd);
             RatingBar adRating = (RatingBar) findViewById(R.id.ratingBarAd);
             TextView adRatingText = (TextView) findViewById(R.id.textViewRatingAd);
-            TextView adDescribtion = (TextView) findViewById(R.id.textViewDescribtionAd);
+            TextView adDescription = (TextView) findViewById(R.id.textViewDescriptionAd);
             AppodealMediaView appodealMediaView = (AppodealMediaView) findViewById(R.id.appodealMediaView);
-            ImageView adImage = (ImageView) findViewById(R.id.imageViewAdContent);
             View providerView = nativeAd.getProviderView(this);
 
             adTitle.setText(nativeAd.getTitle());
@@ -217,18 +210,15 @@ public class DisplayTestVoc extends AppCompatActivity implements Button.OnClickL
             adRating.setRating(nativeAd.getRating());
             BigDecimal roundfinalPrice = new BigDecimal(nativeAd.getRating()).setScale(1, BigDecimal.ROUND_HALF_UP);
             adRatingText.setText(roundfinalPrice.toString());
-            adDescribtion.setText(nativeAd.getDescription());
+            adDescription.setText(nativeAd.getDescription());
             if (providerView != null) {
-                RelativeLayout providerViewContainer = (RelativeLayout) findViewById(R.id.contentDisplayTestVocNativAdRl);
+                RelativeLayout providerViewContainer = (RelativeLayout) findViewById(R.id.providerViewContainer);
                 providerViewContainer.addView(providerView);
             }
-            if (nativeAd.containsVideo()) {
-                nativeAd.setAppodealMediaView(appodealMediaView);
-                adImage.setVisibility(View.GONE);
-            } else {
-                appodealMediaView.setVisibility(View.GONE);
-                adImage.setImageBitmap(nativeAd.getImage());
-            }
+            nativeAd.setAppodealMediaView(appodealMediaView);
+
+            RelativeLayout adContainer = (RelativeLayout) findViewById(R.id.adContainerRl);
+            nativeAd.registerViewForInteraction(adContainer);
         }
     }
 

@@ -29,7 +29,7 @@
                 android:text="Richtig"
                 android:textSize="25dp"
                 android:textColor="@color/colorWhite"
-                android:textAlignment="center"
+                android:gravity="center"
                 android:background="@color/colorPrimary"
                 android:id="@+id/textViewRightBar"/>
 
@@ -41,7 +41,7 @@
                 android:text="Falsch"
                 android:textSize="25dp"
                 android:textColor="@color/colorWhite"
-                android:textAlignment="center"
+                android:gravity="center"
                 android:background="@color/colorPrimary"
                 android:id="@+id/textViewWrongBar"/>
         </TableRow>
@@ -57,7 +57,7 @@
                 android:textColor="#000000"
                 android:layout_weight="1"
                 android:padding="16dp"
-                android:textAlignment="center"/>
+                android:gravity="center"/>
 
             <TextView
                 android:layout_width="0dp"
@@ -68,7 +68,7 @@
                 android:textColor="#000000"
                 android:layout_weight="1"
                 android:padding="16dp"
-                android:textAlignment="center"/>
+                android:gravity="center"/>
 
         </TableRow>
     </TableLayout>
@@ -110,7 +110,6 @@
         android:layout_height="wrap_content"
         android:text="Keine Daten"
         android:id="@+id/textViewGrade"
-
         android:textColor="#000000"
         android:padding="16dp"
         android:textSize="25dp"

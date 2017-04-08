@@ -22,7 +22,6 @@ import android.text.Html;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,6 +51,7 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageException;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
+
 import com.pollfish.interfaces.PollfishClosedListener;
 import com.pollfish.interfaces.PollfishSurveyCompletedListener;
 import com.pollfish.interfaces.PollfishSurveyNotAvailableListener;
@@ -132,9 +132,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Home");
 
-        Appodeal.disableLocationPermissionCheck();
-        Appodeal.initialize(this, "55fe782d03711156879af959c82e1d620827c078e498d45b", Appodeal.BANNER | Appodeal.NATIVE | Appodeal.INTERSTITIAL);
-
         setupDataStorage();
 
         setupNavigation();
@@ -149,6 +146,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setupFirebase();
 
         setupPollfish();
+
+        setupAppodeal();
 
         checkDatabase();
     }
@@ -316,8 +315,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }).pollfishSurveyReceivedListener(new PollfishSurveyReceivedListener() {
                         @Override
                         public void onPollfishSurveyReceived(final boolean playfulSurvey, final int surveyPrice) {
+                            double DsurveyPrice = surveyPrice;
+                            DsurveyPrice = DsurveyPrice / 100;
+
                             Bundle bundle = new Bundle();
-                            bundle.putString(FirebaseAnalytics.Param.VALUE, Double.toString(surveyPrice));
+                            bundle.putDouble(FirebaseAnalytics.Param.VALUE, DsurveyPrice);
                             bundle.putString(FirebaseAnalytics.Param.CURRENCY, "USD");
                             firebaseAnalytics.logEvent("received_survey", bundle);
 
@@ -328,8 +330,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }).pollfishSurveyCompletedListener(new PollfishSurveyCompletedListener() {
                         @Override
                         public void onPollfishSurveyCompleted(final boolean playfulSurvey, final int surveyPrice) {
+                            double DsurveyPrice = surveyPrice;
+                            DsurveyPrice = DsurveyPrice / 100;
+
                             Bundle bundle = new Bundle();
-                            bundle.putString(FirebaseAnalytics.Param.VALUE, Double.toString(surveyPrice));
+                            bundle.putDouble(FirebaseAnalytics.Param.VALUE, DsurveyPrice);
                             bundle.putString(FirebaseAnalytics.Param.CURRENCY, "USD");
                             firebaseAnalytics.logEvent("survey_completed", bundle);
 
@@ -405,14 +410,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    private void setupAppodeal() {
+        Appodeal.disableLocationPermissionCheck();
+        Appodeal.disableWriteExternalStoragePermissionCheck();
+        Appodeal.setTesting(ds.devMode);
+        Appodeal.initialize(this, "55fe782d03711156879af959c82e1d620827c078e498d45b", Appodeal.BANNER | Appodeal.NATIVE | Appodeal.INTERSTITIAL);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
         if(!isDataLoaded()){
-            if(Build.VERSION.SDK_INT >= 11)
-                recreate();
-            else
-                finish();
+            recreate();
         }
         if(ds.prima_surveys && PFparamsBuilder != null){
             PollFish.initWith(this, PFparamsBuilder);
@@ -534,10 +543,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     showSurveyDialog(ds.currentSurveyPrice);
                 }
             }else {
-                if(Build.VERSION.SDK_INT >= 11)
-                    recreate();
-                else
-                    finish();
+                recreate();
             }
         }else if(id == 1){
             if(isDataLoaded()){
@@ -549,10 +555,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     showSurveyDialog(ds.currentSurveyPrice);
                 }
             }else {
-                if(Build.VERSION.SDK_INT >= 11)
-                    recreate();
-                else
-                    finish();
+                recreate();
             }
         }else if(id == 2){
             if(isDataLoaded()){
@@ -569,10 +572,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     showSurveyDialog(ds.currentSurveyPrice);
                 }
             }else {
-                if(Build.VERSION.SDK_INT >= 11)
-                    recreate();
-                else
-                    finish();
+                recreate();
             }
         } else if (id == 3) {
             if(!ds.dataIsLeast){
@@ -622,7 +622,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     Toast.makeText(this, "Dev-Modus deaktiviert", Toast.LENGTH_SHORT).show();
                 }else {
                     ds.devMode = true;
-                    sharedEditor.putBoolean(DEV_MODE, false);
+                    sharedEditor.putBoolean(DEV_MODE, true);
                     sharedEditor.apply();
                     Toast.makeText(this, "Dev-Modus aktiviert", Toast.LENGTH_SHORT).show();
                 }
