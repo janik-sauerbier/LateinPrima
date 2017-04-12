@@ -13,6 +13,8 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.appodeal.ads.Appodeal;
+import com.appodeal.ads.InterstitialCallbacks;
+import com.google.firebase.crash.FirebaseCrash;
 
 public class DisplayVoc extends AppCompatActivity {
     private TableLayout table;
@@ -61,6 +63,26 @@ public class DisplayVoc extends AppCompatActivity {
 
             Appodeal.setBannerViewId(R.id.dv_banner);
             Appodeal.show(this, Appodeal.BANNER_VIEW);
+            Appodeal.setInterstitialCallbacks(new InterstitialCallbacks() {
+                @Override
+                public void onInterstitialLoaded(boolean b) {}
+
+                @Override
+                public void onInterstitialFailedToLoad() {
+                    FirebaseCrash.report(new Throwable("DisplayVoc: InterstitialFailedToLoad()"));
+                }
+
+                @Override
+                public void onInterstitialShown() {}
+
+                @Override
+                public void onInterstitialClicked() {}
+
+                @Override
+                public void onInterstitialClosed() {
+                    finish();
+                }
+            });
         }
 
     }
@@ -110,9 +132,7 @@ public class DisplayVoc extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-
-        if(Appodeal.isLoaded(Appodeal.INTERSTITIAL))
+        if(Appodeal.isLoaded(Appodeal.INTERSTITIAL) && !ds.surveyRemoveAds && !ds.removeAds)
             Appodeal.show(this, Appodeal.INTERSTITIAL);
     }
 

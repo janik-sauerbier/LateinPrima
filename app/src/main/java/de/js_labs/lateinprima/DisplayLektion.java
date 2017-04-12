@@ -12,6 +12,7 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.appodeal.ads.Appodeal;
+import com.appodeal.ads.InterstitialCallbacks;
 import com.google.firebase.crash.FirebaseCrash;
 
 public class DisplayLektion extends AppCompatActivity {
@@ -49,6 +50,26 @@ public class DisplayLektion extends AppCompatActivity {
 
             Appodeal.setBannerViewId(R.id.dl_banner);
             Appodeal.show(this, Appodeal.BANNER_VIEW);
+            Appodeal.setInterstitialCallbacks(new InterstitialCallbacks() {
+                @Override
+                public void onInterstitialLoaded(boolean b) {}
+
+                @Override
+                public void onInterstitialFailedToLoad() {
+                    FirebaseCrash.report(new Throwable("DisplayLektion: InterstitialFailedToLoad()"));
+                }
+
+                @Override
+                public void onInterstitialShown() {}
+
+                @Override
+                public void onInterstitialClicked() {}
+
+                @Override
+                public void onInterstitialClosed() {
+                    finish();
+                }
+            });
         }
 
         toolbar.setTitle("Lektion " + (ds.currentLektion + 1));
@@ -87,16 +108,8 @@ public class DisplayLektion extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-    }
-
-    @Override
     public void onBackPressed() {
-        super.onBackPressed();
-
-        if(Appodeal.isLoaded(Appodeal.INTERSTITIAL))
+        if(Appodeal.isLoaded(Appodeal.INTERSTITIAL) && !ds.surveyRemoveAds && !ds.removeAds)
             Appodeal.show(this, Appodeal.INTERSTITIAL);
     }
 

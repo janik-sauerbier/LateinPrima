@@ -411,10 +411,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void setupAppodeal() {
-        Appodeal.disableLocationPermissionCheck();
-        Appodeal.disableWriteExternalStoragePermissionCheck();
-        Appodeal.setTesting(ds.devMode);
-        Appodeal.initialize(this, "55fe782d03711156879af959c82e1d620827c078e498d45b", Appodeal.BANNER | Appodeal.NATIVE | Appodeal.INTERSTITIAL);
+        if(!ds.surveyRemoveAds && !ds.removeAds){
+            Appodeal.disableLocationPermissionCheck();
+            Appodeal.disableWriteExternalStoragePermissionCheck();
+            Appodeal.setTesting(ds.devMode);
+            Appodeal.initialize(this, "55fe782d03711156879af959c82e1d620827c078e498d45b", Appodeal.BANNER | Appodeal.NATIVE | Appodeal.INTERSTITIAL);
+        }
     }
 
     @Override

@@ -164,18 +164,13 @@ public class DisplayTestVoc extends AppCompatActivity implements Button.OnClickL
                 }
 
                 @Override
-                public void onNativeFailedToLoad() {
-                }
+                public void onNativeFailedToLoad() {}
 
                 @Override
-                public void onNativeShown(NativeAd nativeAd) {
-
-                }
+                public void onNativeShown(NativeAd nativeAd) {}
 
                 @Override
-                public void onNativeClicked(NativeAd nativeAd) {
-
-                }
+                public void onNativeClicked(NativeAd nativeAd) {}
             });
         }
     }
@@ -224,11 +219,6 @@ public class DisplayTestVoc extends AppCompatActivity implements Button.OnClickL
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-    }
-
-    @Override
-    public void onDestroy(){
-        super.onDestroy();
     }
 
     @Override
