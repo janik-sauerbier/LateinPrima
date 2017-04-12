@@ -134,6 +134,8 @@ public class DisplayVoc extends AppCompatActivity {
     public void onBackPressed() {
         if(Appodeal.isLoaded(Appodeal.INTERSTITIAL) && !ds.surveyRemoveAds && !ds.removeAds)
             Appodeal.show(this, Appodeal.INTERSTITIAL);
+        else
+            finish();
     }
 
 }
