@@ -1,1 +1,1 @@
-include ':app', ':pollfish-googleplay-4.3.1', ':cheetah-mobile-3.4.7', ':adcolony-sdk-3.1.2', ':mmedia-6.4.0', ':pollfish-googleplay-4.3.3'
+include ':app', ':cheetah-mobile-3.4.7', ':adcolony-sdk-3.1.2', ':mmedia-6.4.0', ':pollfish-googleplay-4.3.3'
