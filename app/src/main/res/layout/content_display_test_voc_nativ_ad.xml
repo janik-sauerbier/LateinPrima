@@ -105,7 +105,7 @@
             android:layout_alignLeft="@+id/ratingBarAd"
             android:layout_alignStart="@+id/ratingBarAd" />
 
-        <com.appodeal.ads.AppodealMediaView
+        <com.appodeal.ads.NativeMediaView
             android:id="@+id/appodealMediaView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

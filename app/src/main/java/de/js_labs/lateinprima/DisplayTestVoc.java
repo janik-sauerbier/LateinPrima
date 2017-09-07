@@ -20,7 +20,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.appodeal.ads.Appodeal;
-import com.appodeal.ads.AppodealMediaView;
+import com.appodeal.ads.NativeMediaView;
 import com.appodeal.ads.NativeAd;
 import com.appodeal.ads.NativeCallbacks;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -28,7 +28,6 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
 
 public class DisplayTestVoc extends AppCompatActivity implements Button.OnClickListener {
@@ -152,27 +151,31 @@ public class DisplayTestVoc extends AppCompatActivity implements Button.OnClickL
         }else {
             Log.d(ds.LOG_TAG, "Werbung wird angezeigt");
 
+            Log.d("TEST123", "setupAds");
             Appodeal.setBannerViewId(R.id.tv_banner);
             Appodeal.show(this, Appodeal.BANNER_VIEW);
             Appodeal.setAutoCacheNativeMedia(true);
             Appodeal.setAutoCacheNativeIcons(true);
-            Appodeal.cache(this, Appodeal.NATIVE);
             Appodeal.setNativeCallbacks(new NativeCallbacks() {
+
                 @Override
-                public void onNativeLoaded(List<NativeAd> list) {
-                    nativeAd = list.get(0);
+                public void onNativeLoaded() {
+                    nativeAd = Appodeal.getNativeAds(1).get(0);
                 }
 
                 @Override
                 public void onNativeFailedToLoad() {}
 
                 @Override
-                public void onNativeShown(NativeAd nativeAd) {}
+                public void onNativeShown(NativeAd nativeAd) {
+                }
 
                 @Override
-                public void onNativeClicked(NativeAd nativeAd) {}
+                public void onNativeClicked(NativeAd nativeAd) {
+                }
             });
         }
+        Appodeal.cache(this, Appodeal.NATIVE);
     }
 
     public void showAd(){
@@ -194,23 +197,28 @@ public class DisplayTestVoc extends AppCompatActivity implements Button.OnClickL
             RatingBar adRating = (RatingBar) findViewById(R.id.ratingBarAd);
             TextView adRatingText = (TextView) findViewById(R.id.textViewRatingAd);
             TextView adDescription = (TextView) findViewById(R.id.textViewDescriptionAd);
-            AppodealMediaView appodealMediaView = (AppodealMediaView) findViewById(R.id.appodealMediaView);
+            NativeMediaView nativeMediaView = (NativeMediaView) findViewById(R.id.appodealMediaView);
             View providerView = nativeAd.getProviderView(this);
 
             adTitle.setText(nativeAd.getTitle());
             adLogo.setImageBitmap(nativeAd.getIcon());
             adBtn.setText(nativeAd.getCallToAction());
-            adRating.setMax(5);
-            adRating.setStepSize(0.1f);
-            adRating.setRating(nativeAd.getRating());
-            BigDecimal roundfinalPrice = new BigDecimal(nativeAd.getRating()).setScale(1, BigDecimal.ROUND_HALF_UP);
-            adRatingText.setText(roundfinalPrice.toString());
+            if (nativeAd.getRating() == 0) {
+                adRating.setVisibility(View.GONE);
+                adRatingText.setVisibility(View.GONE);
+            } else {
+                adRating.setMax(5);
+                adRating.setStepSize(0.1f);
+                adRating.setRating(nativeAd.getRating());
+                BigDecimal roundfinalPrice = new BigDecimal(nativeAd.getRating()).setScale(1, BigDecimal.ROUND_HALF_UP);
+                adRatingText.setText(roundfinalPrice.toString());
+            }
             adDescription.setText(nativeAd.getDescription());
             if (providerView != null) {
                 RelativeLayout providerViewContainer = (RelativeLayout) findViewById(R.id.providerViewContainer);
                 providerViewContainer.addView(providerView);
             }
-            nativeAd.setAppodealMediaView(appodealMediaView);
+            nativeAd.setNativeMediaView(nativeMediaView);
 
             RelativeLayout adContainer = (RelativeLayout) findViewById(R.id.adContainerRl);
             nativeAd.registerViewForInteraction(adContainer);
